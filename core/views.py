@@ -42,4 +42,18 @@ def signup(req):
     else:
         return render(req, 'signup.html')
 def signin(req):
-    return render(req,'signin.html')
+    if req.method == 'POST':
+        username = req.POST['username']
+        password = req.POST['password']
+
+        user = auth.authenticate(username=username, password=password)
+
+        if user is not None:
+            auth.login(req, user)
+            return redirect('/')
+        else:
+            messages.info(req, 'Credentials Invalid')
+            return redirect('signin')
+
+    else:
+        return render(req, 'signin.html')
