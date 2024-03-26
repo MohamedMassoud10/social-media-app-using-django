@@ -1,15 +1,18 @@
 from django.shortcuts import render ,redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User , auth
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Profile
 # Create your views here.
-
+@login_required(login_url='signin')
 def index(req):
+
     return render(req,'index.html')
 
 
 def signup(req):
+
     if req.method == 'POST':
         username = req.POST['username']
         email = req.POST['email']
@@ -41,6 +44,8 @@ def signup(req):
             return redirect('signup')
     else:
         return render(req, 'signup.html')
+
+
 def signin(req):
     if req.method == 'POST':
         username = req.POST['username']
@@ -57,3 +62,12 @@ def signin(req):
 
     else:
         return render(req, 'signin.html')
+
+
+def setting(req):
+    return render(req,'setting.html',)
+
+
+def logout(req):
+    auth.logout(req)
+    return redirect('signin')
