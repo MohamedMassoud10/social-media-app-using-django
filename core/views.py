@@ -9,7 +9,7 @@ from .models import Profile
 def index(req):
     user_object = User.objects.get(username=req.user.username)
     user_profile = Profile.objects.get(user=user_object)
-    return render(req,'index.html',{'WC':user_profile})
+    return render(req,'index.html',{'user_profile':user_profile})
 
 @login_required(login_url='signin')
 
