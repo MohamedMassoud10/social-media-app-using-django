@@ -14,8 +14,28 @@ def index(req):
 @login_required(login_url='signin')
 
 def setting(req):
-    print("the request: ",req)
     user_profile = Profile.objects.get(user=req.user)
+
+    if req.method == 'POST':
+        if req.FILES.get('image')==None:
+            image=user_profile.profileimag
+            bio = req.POST['bio']
+            location = req.POST['location']
+
+            user_profile.profileimag=image
+            user_profile.bio=bio
+            user_profile.location=location
+            user_profile.save()
+        if req.FILES.get('image') != None :
+            image=req.FILES.get('image')
+            bio = req.POST['bio']
+            location = req.POST['location']
+
+            user_profile.profileimag=image
+            user_profile.bio=bio
+            user_profile.location=location
+            user_profile.save()    
+    
     return render(req,'setting.html',{'user_profile':user_profile})
 
 
