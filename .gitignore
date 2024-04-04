@@ -1,0 +1,30 @@
+# Ignore compiled Python files
+*.pyc
+__pycache__
+
+# Ignore the virtual environment directory
+venv/
+env/
+
+# Ignore the Django migrations
+*/migrations/
+db.sqlite3
+
+# Ignore local settings file (if you have one)
+local_settings.py
+
+# Ignore IDE or editor specific files and directories
+.idea/
+.vscode/
+
+# Ignore any logs or temporary files
+*.log
+*.swp
+*.swo
+
+# Ignore static files directory (only if you're serving static files from a separate location in production)
+staticfiles/
+
+# Ignore media files directory (only if you're serving media files from a separate location in production)
+media/
+.env
