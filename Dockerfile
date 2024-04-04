@@ -1,17 +1,17 @@
+# Use the official Python image as a base
 FROM python:3.11.4-slim-bullseye
+
+# Set the working directory in the container
 WORKDIR /app
 
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
+# Update the package lists and install git
+RUN apt-get update && apt-get install -y git
 
-# install system dependencies
-RUN apt-get update
-
-# install dependencies
-RUN pip install --upgrade pip
+# Copy the requirements file into the container at /app
 COPY ./requirements.txt /app/
-RUN pip install -r requirements.txt
 
+# Upgrade pip and install Python dependencies
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# Copy the current directory contents into the container at /app
 COPY . /app
-
-ENTRYPOINT [ "gunicorn", "core.wsgi", "-b", "0.0.0.0:8000"]
