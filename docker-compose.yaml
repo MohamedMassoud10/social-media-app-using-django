@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  web:
+    build: .
+    volumes:
+      - .:/code
+    image: web:django
+    command: "sh /code/release.sh"
+    ports:
+      - "8000:8000"

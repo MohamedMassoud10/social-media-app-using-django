@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import dj_database_url
 from pathlib import Path
-
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
 import os 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,7 +29,7 @@ SECRET_KEY = 'django-insecure-+k6=hf!km56gm@wg8)zdd=p1++b1*!5s*c2^zzo%)&ji*&l=og
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app']
+ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1']
 
 
 # Application definition
@@ -77,15 +79,22 @@ WSGI_APPLICATION = 'socialMediaAPP.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Define DATABASES
+DATABASES = {}
+
+# Check if DATABASE_URL environment variable is set
+if 'DATABASE_URL' in os.environ:
+    # Use dj_database_url to parse the DATABASE_URL
+    DATABASES['default'] = dj_database_url.parse(os.environ.get("DATABASE_URL"))
+else:
+    # Fall back to SQLite configuration
+    DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
-
-}
-# postgres://social_media_training_app_user:P1K7d5eT54ge6E937r5ULgtKOCKxJVO2@dpg-co7ggcgl6cac73f2gd9g-a.oregon-postgres.render.com/social_media_training_app
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
