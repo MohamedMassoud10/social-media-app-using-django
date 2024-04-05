@@ -1,9 +1,5 @@
 FROM python:3.10
 
-# Install git
-RUN apt-get update && \
-    apt-get install -y git
-
 # Set working directory
 WORKDIR /code
 
