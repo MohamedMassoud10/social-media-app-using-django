@@ -9,11 +9,10 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+ENVIRONMENT = 'development'
 import dj_database_url
 from pathlib import Path
-# Load environment variables from .env file
-from dotenv import load_dotenv
-load_dotenv()
+from decouple import config as env
 import os 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,9 +26,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+k6=hf!km56gm@wg8)zdd=p1++b1*!5s*c2^zzo%)&ji*&l=og'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1','.onrender.com','.netlify.com']
+if ENVIRONMENT == 'development': 
+    DEBUG = True
+else:
+    DEBUG = True
+
+ALLOWED_HOSTS = ['.onrender.com','127.0.0.1']
 
 
 # Application definition
@@ -52,7 +55,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 
 ]
 
@@ -80,22 +82,21 @@ WSGI_APPLICATION = 'socialMediaAPP.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Define DATABASES
-DATABASES = {}
-
-# Check if DATABASE_URL environment variable is set
-if 'DATABASE_URL' in os.environ:
-    # Use dj_database_url to parse the DATABASE_URL
-    DATABASES['default'] = dj_database_url.parse(os.environ.get("DATABASE_URL"))
-else:
-    # Fall back to SQLite configuration
-    DATABASES['default'] = {
+DATABASES = {
+    'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+
+}
+
+POSTGRES_LOCALLY=True
+if ENVIRONMENT == 'production' or POSTGRES_LOCALLY ==True :
+    DATABASES['default'] =dj_database_url.parse(env('DATABASE_URL'))
+
+
+# postgres://social_media_training_app_user:P1K7d5eT54ge6E937r5ULgtKOCKxJVO2@dpg-co7ggcgl6cac73f2gd9g-a.oregon-postgres.render.com/social_media_training_app
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -130,12 +131,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 STATIC_URL = '/static/'
-if not DEBUG:
-    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
-    # and renames the files with unique names for each version to support long-term caching
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
