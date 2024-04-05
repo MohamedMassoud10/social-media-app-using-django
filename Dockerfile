@@ -1,22 +1,20 @@
-ARG PYTHON_VERSION=3.10-slim-buster
-ARG DEBIAN_FRONTEND=noninteractive
-ARG PORT=8000
-FROM python:${PYTHON_VERSION}
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-RUN mkdir -p /code
+FROM python:3.10
+
+# Install git
+RUN apt-get update && \
+    apt-get install -y git
+
+# Set working directory
 WORKDIR /code
-#install the linux packages, since these are the dependencies of some python packages
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    gcc \
-    cron \
-    wkhtmltopdf \
-    && rm -rf /var/lib/apt/lists/* !
+
+# Copy requirements file
 COPY requirements.txt /tmp/requirements.txt
+
+# Install Python dependencies
 RUN set -ex && \
     pip install --upgrade pip && \
     pip install -r /tmp/requirements.txt && \
     rm -rf /root/.cache/
+
+# Copy the rest of your application code
 COPY . /code
-EXPOSE ${PORT}
