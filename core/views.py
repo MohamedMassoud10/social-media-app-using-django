@@ -11,6 +11,7 @@ def index(req):
     user_object = User.objects.get(username=req.user.username)
     user_profile = Profile.objects.get(user=user_object)
     posts=Post.objects.all()
+
     return render(req,'index.html',{'user_profile':user_profile,'posts':posts})
 
 @login_required(login_url='signin')
