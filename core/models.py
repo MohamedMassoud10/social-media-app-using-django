@@ -25,6 +25,15 @@ class Post(models.Model):
     def __str__(self):
         return self.user
 
+class LikePost(models.Model):
+    liked_post = models.ForeignKey(Post, related_name='likes', on_delete=models.CASCADE)
+    post_id = models.CharField(max_length=500)
+    username = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"Liked by {self.username} on {self.liked_post}"
+
+
 class Comment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)

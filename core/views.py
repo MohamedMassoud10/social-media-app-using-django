@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User , auth
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Profile,Post,Comment
+from .models import Profile,Post,Comment,LikePost
 # Create your views here.
 @login_required(login_url='signin')
 def index(req):
@@ -12,7 +12,7 @@ def index(req):
     posts=Post.objects.all()
     return render(req,'index.html',{'user_profile':user_profile,'posts':posts})
 
-
+@login_required(login_url='signin')
 def upload(req):
     if req.method=="POST":
         user=req.user.username
@@ -51,6 +51,32 @@ def setting(req):
             user_profile.save()    
     
     return render(req,'setting.html',{'user_profile':user_profile})
+
+
+
+@login_required(login_url='signin')
+def like_post(req):
+    username = req.user.username
+    post_id = req.GET.get('post_id')
+
+    post = Post.objects.get(id=post_id)
+
+    like_filter = LikePost.objects.filter(post_id=post_id, username=username).first()
+
+    if like_filter == None:
+        new_like = LikePost.objects.create(post_id=post_id, username=username)
+        new_like.save()
+        post.no_of_likes = post.no_of_likes+1
+        post.save()
+        return redirect('/')
+    else:
+        like_filter.delete()
+        post.no_of_likes = post.no_of_likes-1
+        post.save()
+        return redirect('/')
+
+
+
 
 @login_required(login_url='signin')
 def add_comment(request):
@@ -114,7 +140,7 @@ def signin(req):
 
     else:
         return render(req, 'signin.html')
-
+@login_required(login_url='signin')
 def logout(req):
     auth.logout(req)
     return redirect('signin')
