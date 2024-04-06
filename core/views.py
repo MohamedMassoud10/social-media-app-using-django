@@ -24,7 +24,48 @@ def upload(req):
     else:
         redirect('/')
 
+@login_required(login_url='signin')
+def like_post(req):
+    username = req.user.username
+    post_id = req.GET.get('post_id')
 
+    post = Post.objects.get(id=post_id)
+
+    like_filter = LikePost.objects.filter(post_id=post_id, username=username).first()
+
+    if like_filter == None:
+        new_like = LikePost.objects.create(post_id=post_id, username=username)
+        new_like.save()
+        post.no_of_likes = post.no_of_likes+1
+        post.save()
+        return redirect('/')
+    else:
+        like_filter.delete()
+        post.no_of_likes = post.no_of_likes-1
+        post.save()
+        return redirect('/')
+
+
+@login_required(login_url='signin')
+def add_comment(req):
+    if req.method == 'POST':
+        post_id = req.POST.get('post_id')
+        comment_text = req.POST.get('comment_text')
+        post = Post.objects.get(id=post_id)
+        user = req.user.username
+        
+        comment_filter = Comment.objects.filter(post=post, user=user, text=comment_text).first()
+
+        if comment_filter is None:
+            # If the user hasn't commented, create a new comment
+            comment = Comment.objects.create(post=post, user=user, text=comment_text)
+            comment.save()
+            return redirect('/')
+        else:
+            # If the user has already commented, do nothing
+            return redirect('/')
+        
+    return redirect('/')
 
 @login_required(login_url='signin')
 def setting(req):
@@ -54,40 +95,6 @@ def setting(req):
 
 
 
-@login_required(login_url='signin')
-def like_post(req):
-    username = req.user.username
-    post_id = req.GET.get('post_id')
-
-    post = Post.objects.get(id=post_id)
-
-    like_filter = LikePost.objects.filter(post_id=post_id, username=username).first()
-
-    if like_filter == None:
-        new_like = LikePost.objects.create(post_id=post_id, username=username)
-        new_like.save()
-        post.no_of_likes = post.no_of_likes+1
-        post.save()
-        return redirect('/')
-    else:
-        like_filter.delete()
-        post.no_of_likes = post.no_of_likes-1
-        post.save()
-        return redirect('/')
-
-
-
-
-@login_required(login_url='signin')
-def add_comment(request):
-    if request.method == 'POST':
-        post_id = request.POST.get('post_id')
-        comment_text = request.POST.get('comment_text')
-        post = Post.objects.get(id=post_id)
-        user = request.user
-        comment = Comment.objects.create(post=post, user=user, text=comment_text)
-        comment.save()
-    return redirect('index')
 
 def signup(request):
     if request.method == 'POST':

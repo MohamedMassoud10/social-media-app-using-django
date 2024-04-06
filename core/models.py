@@ -22,16 +22,16 @@ class Post(models.Model):
     caption=models.TextField()
     created_at=models.DateTimeField(default=datetime.now)
     no_of_likes=models.IntegerField(default=0)
+    no_of_comments=models.IntegerField(default=0)
     def __str__(self):
         return self.user
 
 class LikePost(models.Model):
-    liked_post = models.ForeignKey(Post, related_name='likes', on_delete=models.CASCADE)
     post_id = models.CharField(max_length=500)
     username = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"Liked by {self.username} on {self.liked_post}"
+        return self.username
 
 
 class Comment(models.Model):
