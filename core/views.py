@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User , auth
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Profile,Post
+from .models import Profile,Post,Comment
 # Create your views here.
 @login_required(login_url='signin')
 def index(req):
@@ -52,7 +52,16 @@ def setting(req):
     
     return render(req,'setting.html',{'user_profile':user_profile})
 
-
+@login_required(login_url='signin')
+def add_comment(request):
+    if request.method == 'POST':
+        post_id = request.POST.get('post_id')
+        comment_text = request.POST.get('comment_text')
+        post = Post.objects.get(id=post_id)
+        user = request.user
+        comment = Comment.objects.create(post=post, user=user, text=comment_text)
+        comment.save()
+    return redirect('index')
 
 def signup(request):
     if request.method == 'POST':

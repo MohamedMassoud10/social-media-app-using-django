@@ -8,4 +8,5 @@ urlpatterns = [
     path('settings',views.setting,name='settings'),
     path('logout',views.logout,name='logout'),
     path('upload',views.upload,name='upload'),
+    path('add_comment',views.add_comment,name='add_comment'),
 ]
