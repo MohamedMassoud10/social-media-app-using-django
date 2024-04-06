@@ -220,7 +220,7 @@
                                           <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md ">
                                            <i class="uil-share-alt mr-1"></i> Share
                                           </a> 
-                                      </li> -->
+                                      </li> 
                                        <li> 
                                           <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md ">
                                            <i class="uil-edit-alt mr-1"></i>  Edit Post 
@@ -287,9 +287,9 @@
                                             {% if post.no_of_comments == 0 %}
                                             <p>No Comments</p>
                                             {% elif post.no_of_comments == 1 %}
-                                            <p>commented by {{post.no_of_comments}} person</p>
+                                            <p>{{post.no_of_comments}} comments </p>
                                             {% else %}
-                                            <p>commented by {{post.no_of_comments}} people</p>
+                                            <p>{{post.no_of_comments}}  comments</p>
                                             {% endif %}
                                         </div>
                                         

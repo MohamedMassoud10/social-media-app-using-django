@@ -1,9 +1,10 @@
 from django.shortcuts import render ,redirect
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.models import User , auth
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Profile,Post,Comment,LikePost
+from django.urls import reverse
 # Create your views here.
 @login_required(login_url='signin')
 def index(req):
@@ -20,9 +21,9 @@ def upload(req):
         caption=req.POST['caption']
         new_post=Post.objects.create(user=user,image=image,caption=caption)
         new_post.save()
-        redirect('/')
+        return HttpResponseRedirect(reverse('index')) 
     else:
-        redirect('/')
+        return HttpResponseRedirect(reverse('index')) 
 
 @login_required(login_url='signin')
 def like_post(req):
@@ -56,12 +57,17 @@ def add_comment(req):
         
         comment_filter = Comment.objects.filter(post=post, user=user, text=comment_text).first()
 
-        if comment_filter is None:
+        if comment_filter == None:
             # If the user hasn't commented, create a new comment
             comment = Comment.objects.create(post=post, user=user, text=comment_text)
             comment.save()
+            post.no_of_comments = post.no_of_comments+1
+            post.save()
             return redirect('/')
         else:
+            comment_filter.delete()
+            post.no_of_comments = post.no_of_comments-1
+            post.save()
             # If the user has already commented, do nothing
             return redirect('/')
         
