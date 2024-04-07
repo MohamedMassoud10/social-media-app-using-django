@@ -14,6 +14,15 @@ def index(req):
 
     return render(req,'index.html',{'user_profile':user_profile,'posts':posts})
 
+
+@login_required(login_url='signin')
+def profile(req):
+    user_object = User.objects.get(username=req.user.username)
+    user_profile = Profile.objects.get(user=user_object)
+    return render(req,'profile.html',{'user_profile':user_profile})
+
+
+
 @login_required(login_url='signin')
 def upload(req):
     if req.method=="POST":
@@ -158,3 +167,5 @@ def signin(req):
 def logout(req):
     auth.logout(req)
     return redirect('signin')
+
+
