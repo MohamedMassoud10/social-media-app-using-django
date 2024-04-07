@@ -34,6 +34,14 @@ class LikePost(models.Model):
         return self.username
 
 
+class FollowersCount(models.Model):
+    follower = models.CharField(max_length=100)
+    user = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.user
+
+
 class Comment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)

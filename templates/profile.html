@@ -148,8 +148,14 @@
 					
 										{% for post in user_posts %}
 										<li>
+											{% if post.image %}
 											<a class="strip" href="{{post.image.url}}" title="" data-strip-group="mygroup" data-strip-group-options="loop: false">
-												<img src="{{post.image.url}}" style="height: 250px; width: 300px;" alt=""></a>
+												<img src="{{post.image.url}}" style="height: 250px; width: 300px;" alt="">
+											</a>
+											{% endif%}
+											<p class='m-4 cursor-pointer text-red-500'>
+												{{post.caption}}
+											</p>
 										</li>
 										{% endfor %}
 										
