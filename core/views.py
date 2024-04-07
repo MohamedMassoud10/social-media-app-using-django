@@ -16,9 +16,10 @@ def index(req):
 
 
 @login_required(login_url='signin')
-def profile(req):
+def profile(req,pk):
     user_object = User.objects.get(username=req.user.username)
     user_profile = Profile.objects.get(user=user_object)
+    pk=user_profile.user.username
     return render(req,'profile.html',{'user_profile':user_profile})
 
 
